@@ -33,40 +33,17 @@ def exceltopdf():
 @app.route('/compress-pdf')
 def compresspdf():  
     return render_template('compress-pdf.html')
-    
-
-# @app.route('/convertword', methods=['POST'])
-# def convertwordtopdf():
-#     file = request.files['file']
-#     if not file.filename.endswith(('.doc', '.docx')):
-#         return "Invalid file format. Please upload a .doc or .docx file."
-    
-#     sys.stderr.write("Starting conversion for " + file.filename + "\n")
-#     word_path = tempfile.NamedTemporaryFile(suffix='.docx').name
-#     file.save(word_path)
-#     pdf_path = f"{word_path}.pdf"
-#     command = ['unoconv', '-f', 'pdf', word_path]
-#     subprocess.run(command)
-    
-#     return send_file(pdf_path, as_attachment=True)
 
 @app.route('/convertpdf', methods=['POST'])
 def convert():
-    # Get the uploaded file and save it to disk
     file = request.files['file']
     if not file.filename.endswith('.pdf'):
         return "Invalid file format. Please upload a .pdf file."
-
     sys.stderr.write("Starting conversion for " + file.filename + "\n")
-
     pdf_path = tempfile.NamedTemporaryFile().name
     file.save(pdf_path)
-
-    # Convert the PDF file to a Word document
     docx_path = f"{pdf_path}.docx"
     pdf2docx.parse(pdf_path, docx_path)
-
-    # Return the converted Word document to the user
     return send_file(docx_path, as_attachment=True)
 
 
